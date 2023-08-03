@@ -1,0 +1,12 @@
+imports:
+  - { resource: Backend/DashboardWidgets.yaml }
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  HMMH\SolrFileIndexerAdmin\:
+    resource: '../Classes/*'
+    exclude: '../Classes/Backend/Widgets/*'

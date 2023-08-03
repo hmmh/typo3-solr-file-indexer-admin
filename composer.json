@@ -1,0 +1,48 @@
+{
+  "name": "hmmh/solr-file-indexer-admin",
+  "description": "Solr file indexer admin for Typo3",
+  "keywords": ["typo3", "solr", "file", "tika", "apache", "indexer"],
+  "type": "typo3-cms-extension",
+  "license": "GPL-3.0-or-later",
+
+  "authors": [
+    {
+      "name": "Sascha Wilking",
+      "email": "sascha.wilking@hmmh.de",
+      "homepage": "https://hmmh.de/",
+      "role": "Developer"
+    }
+  ],
+
+  "require": {
+    "php": ">=8.1",
+    "typo3/cms-core": "12.4.4",
+    "typo3/cms-dashboard": "12.4.4",
+    "hmmh/solr-file-indexer": "dev-release/3.0"
+  },
+
+  "autoload": {
+    "psr-4": {
+      "HMMH\\SolrFileIndexerAdmin\\": "Classes"
+    }
+  },
+
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https:\/\/composer.typo3.org\/"
+    }
+  ],
+
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "solr_file_indexer_admin"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "typo3/cms-composer-installers": true,
+      "typo3/class-alias-loader": true
+    }
+  }
+}
