@@ -51,7 +51,7 @@ class IndexableDocumentsLanguageWidget implements WidgetInterface, AdditionalCss
      */
     public function getCssFiles(): array
     {
-        return ['EXT:solr_file_indexer/Resources/Public/Css/widget.css'];
+        return ['EXT:solr_file_indexer_admin/Resources/Public/Css/widget.css'];
     }
 
     /**
