@@ -29,10 +29,13 @@ class IndexableDocumentsDomainProvider implements ChartDataProviderInterface
         $backgroundColor = [];
         $color = 0;
 
-        $roots = GeneralUtility::makeInstance(IndexingService::class)->getIndexableDocuments();
+        /** @var IndexingService $widgetService */
+        $widgetService = GeneralUtility::makeInstance(IndexingService::class);
+
+        $roots = $widgetService->getIndexableDocuments();
         foreach ($roots as $root) {
             $labels[] = $root['host'];
-            $backgroundColor[] = $this->chartColors[$color++];
+            $backgroundColor[] = $this->chartColors[$color];
             $tmpCount = 0;
             foreach ($root['languages'] as $language) {
                 if ($language['count'] > 0) {
@@ -41,6 +44,8 @@ class IndexableDocumentsDomainProvider implements ChartDataProviderInterface
             }
 
             $data[] = $tmpCount;
+
+            $color++;
 
             if ($color >= count($this->chartColors)) {
                 $color = 0;
@@ -51,7 +56,7 @@ class IndexableDocumentsDomainProvider implements ChartDataProviderInterface
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => $this->getLanguageService()->sL('LLL:EXT:solr_file_indexer/Resources/Private/Language/locallang_db.xlf:widgets.total'),
+                    'label' => $this->getLanguageService()->sL('LLL:EXT:solr_file_indexer_admin/Resources/Private/Language/locallang_db.xlf:widgets.total'),
                     'backgroundColor' => $backgroundColor,
                     'data' => $data
                 ]

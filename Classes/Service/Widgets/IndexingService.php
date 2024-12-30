@@ -6,7 +6,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use HMMH\SolrFileIndexer\Service\ConnectionAdapter;
-use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -19,28 +18,20 @@ class IndexingService
     public function getIndexableDocuments(): array
     {
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $queryBuilder = $connectionPool->getQueryBuilderForTable('sys_file_metadata');
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_solrfileindexer_items');
 
-        $res = $queryBuilder->select('uid', 'enable_indexing', 'sys_language_uid')
-            ->from('sys_file_metadata')
-            ->where(
-                $queryBuilder->expr()->neq(
-                    'enable_indexing',
-                    $queryBuilder->createNamedParameter('', Connection::PARAM_STR)
-                )
-            )
-            ->execute();
+        $res = $queryBuilder->select('uid', 'root', 'sys_language_uid')
+            ->from('tx_solrfileindexer_items')
+            ->executeQuery();
 
         $result = $res->fetchAllAssociative();
 
         $roots = $this->getSiteRoots();
 
         foreach ($result as $indexItem) {
-            $pages = explode(',', $indexItem['enable_indexing']);
-            foreach ($pages as $page) {
-                if (isset($roots[$page], $roots[$page]['languages'][$indexItem['sys_language_uid']])) {
-                    $roots[$page]['languages'][$indexItem['sys_language_uid']]['count']++;
-                }
+            $siteRoot = $indexItem['root'];
+            if (isset($roots[$siteRoot], $roots[$siteRoot]['languages'][$indexItem['sys_language_uid']])) {
+                $roots[$siteRoot]['languages'][$indexItem['sys_language_uid']]['count']++;
             }
         }
 
@@ -112,7 +103,7 @@ class IndexingService
         foreach ($sites as $site) {
             /** @var \TYPO3\CMS\Core\Site\Entity\Site $site */
             $roots[$site->getRootPageId()] = [
-                'host' => $site->getBase()->getHost(),
+                'host' => (string)$site->getBase(),
                 'languages' => $this->getSiteLanguages($site->getLanguages())
             ];
         }

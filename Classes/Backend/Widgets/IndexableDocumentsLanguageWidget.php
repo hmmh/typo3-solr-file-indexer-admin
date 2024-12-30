@@ -3,47 +3,36 @@ declare(strict_types = 1);
 namespace HMMH\SolrFileIndexerAdmin\Backend\Widgets;
 
 use HMMH\SolrFileIndexerAdmin\Service\Widgets\IndexingService;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Backend\View\BackendViewFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Dashboard\Widgets\AdditionalCssInterface;
+use TYPO3\CMS\Dashboard\Widgets\RequestAwareWidgetInterface;
 use TYPO3\CMS\Dashboard\Widgets\WidgetConfigurationInterface;
 use TYPO3\CMS\Dashboard\Widgets\WidgetInterface;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * This widget will show the number of pages
  */
-class IndexableDocumentsLanguageWidget implements WidgetInterface, AdditionalCssInterface
+class IndexableDocumentsLanguageWidget implements WidgetInterface, AdditionalCssInterface, RequestAwareWidgetInterface
 {
-    /**
-     * @var WidgetConfigurationInterface
-     */
-    private $configuration;
-
-    /**
-     * @var StandaloneView
-     */
-    private $view;
-
-    /**
-     * @var array
-     */
-    private $options;
+    private ServerRequestInterface $request;
 
     /**
      * IndexableDocumentsLanguageWidget constructor.
      *
      * @param WidgetConfigurationInterface $configuration
-     * @param StandaloneView               $view
      * @param array                        $options
      */
     public function __construct(
-        WidgetConfigurationInterface $configuration,
-        StandaloneView $view,
-        array $options = []
-    ) {
-        $this->configuration = $configuration;
-        $this->view = $view;
-        $this->options = $options;
+        private readonly WidgetConfigurationInterface $configuration,
+        private readonly BackendViewFactory $backendViewFactory,
+        private readonly array $options = [],
+    ) {}
+
+    public function setRequest(ServerRequestInterface $request): void
+    {
+        $this->request = $request;
     }
 
     /**
@@ -59,11 +48,12 @@ class IndexableDocumentsLanguageWidget implements WidgetInterface, AdditionalCss
      */
     public function renderWidgetContent(): string
     {
-        $this->view->setTemplate('Widget/IndexableDocumentsLanguageWidget');
+        $view = $this->backendViewFactory->create($this->request);
 
+        /** @var IndexingService $widgetService */
         $widgetService = GeneralUtility::makeInstance(IndexingService::class);
 
-        $this->view->assignMultiple([
+        $view->assignMultiple([
             'icon' => $this->options['icon'] ?? null,
             'title' => $this->options['title'] ?? null,
             'roots' => $widgetService->getIndexableDocuments(),
@@ -71,7 +61,7 @@ class IndexableDocumentsLanguageWidget implements WidgetInterface, AdditionalCss
             'configuration' => $this->configuration
         ]);
 
-        return $this->view->render();
+        return $view->render('Widget/IndexableDocumentsLanguageWidget');
     }
 
     /**
