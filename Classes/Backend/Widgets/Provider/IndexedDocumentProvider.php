@@ -28,12 +28,17 @@ class IndexedDocumentProvider implements ChartDataProviderInterface
         $backgroundColor = [];
         $color = 0;
 
-        $cores = GeneralUtility::makeInstance(IndexingService::class)->getIndexedDocuments();
+        /** @var IndexingService $widgetService */
+        $widgetService = GeneralUtility::makeInstance(IndexingService::class);
+
+        $cores = $widgetService->getIndexedDocuments();
 
         foreach ($cores as $core) {
             $labels[] = $core['options']['core'];
             $data[] = $core['numFound'];
-            $backgroundColor[] = $this->chartColors[$color++];
+            $backgroundColor[] = $this->chartColors[$color];
+
+            $color++;
 
             if ($color >= count($this->chartColors)) {
                 $color = 0;

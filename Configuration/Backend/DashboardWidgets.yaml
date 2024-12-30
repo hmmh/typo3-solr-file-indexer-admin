@@ -12,8 +12,6 @@ services:
 
   dashboard.widget.sfiIndexableDocumentsLanguage:
     class: 'HMMH\SolrFileIndexerAdmin\Backend\Widgets\IndexableDocumentsLanguageWidget'
-    arguments:
-      $view: '@dashboard.views.widget'
     tags:
       - name: dashboard.widget
         identifier: 'sfiIndexableDocumentsLanguage'
@@ -22,13 +20,12 @@ services:
         description: 'LLL:EXT:solr_file_indexer_admin/Resources/Private/Language/locallang_db.xlf:widgets.indexableDocumentsLanguage.title'
         iconIdentifier: 'content-widget-number'
         height: 'medium'
-        width: 'small'
+        width: 'medium'
 
   dashboard.widget.sfiIndexableDocumentsDomain:
     class: 'TYPO3\CMS\Dashboard\Widgets\BarChartWidget'
     arguments:
       $dataProvider: '@HMMH\SolrFileIndexerAdmin\Backend\Widgets\Provider\IndexableDocumentsDomainProvider'
-      $view: '@dashboard.views.widget'
     tags:
       - name: dashboard.widget
         identifier: 'sfiIndexableDocumentsDomain'
@@ -37,13 +34,12 @@ services:
         description: 'LLL:EXT:solr_file_indexer_admin/Resources/Private/Language/locallang_db.xlf:widgets.indexableDocumentsDomain.title'
         iconIdentifier: 'content-widget-chart-bar'
         height: 'medium'
-        width: 'small'
+        width: 'medium'
 
   dashboard.widget.sfiIndexedDocuments:
     class: 'TYPO3\CMS\Dashboard\Widgets\DoughnutChartWidget'
     arguments:
       $dataProvider: '@HMMH\SolrFileIndexerAdmin\Backend\Widgets\Provider\IndexedDocumentProvider'
-      $view: '@dashboard.views.widget'
     tags:
       - name: dashboard.widget
         identifier: 'sfiIndexedDocuments'
